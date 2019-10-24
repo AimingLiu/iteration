@@ -1,0 +1,117 @@
+---
+title: "write function"
+author: "AimingLiu"
+date: "10/24/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyverse)
+```
+
+we are going to write some functions
+```{r}
+ x = rnorm(n = 30,mean = 4,sd = 2.3)
+ x_again = rnorm(n = 30,mean = 6,sd = .3)
+ y = rnorm(n = 30,mean = 5,sd = 2)
+ 
+```
+
+
+```{r}
+z_scores = function(x_arg) {
+  
+  if (!is.numeric(x_arg)){stop("Argument x should be numeric")
+  }else if (length(x_arg) == 1) {
+    stop("Z scores cannot be computed for length 1 vectors")
+  }
+  z = (x_arg- mean(x_arg)) / sd(x_arg)
+  z
+}
+
+
+```
+```{r}
+z_scores(x_arg = x_again)
+
+z_scores(x_arg = y)
+
+
+```
+
+# Multiple outputs
+```{r}
+mean_and_sd = function(input_x){
+  if (!is.numeric(input_x)){stop("Argument x should be numeric")
+  }else if (length(input_x) == 1) {
+    stop("Z scores cannot be computed for length 1 vectors")}
+  mean_x = mean(input_x)
+  sd_x = sd(input_x)
+
+ mean_x
+ sd_x
+ tibble(
+    mean = mean_x, 
+    sd = sd_x
+  )
+}
+```
+
+#test the function
+```{r}
+mean_and_sd(input_x = y)
+```
+# Multiple inputs
+
+```{r}
+sim_data = tibble(
+  x = rnorm(30, mean = 1, sd = 1),
+  y = 2 + 3 * x + rnorm(30, 0, 1)
+)
+
+ls_fit = lm(y ~ x, data = sim_data) 
+  
+beta0_hat = coef(ls_fit)[1]
+beta1_hat = coef(ls_fit)[2]
+```
+```{r}
+sim_regression = function(n){
+  
+  sim_data = tibble(
+  x = rnorm(n, mean = 1, sd = 1),
+  y = 2 + 3 * x + rnorm(n, 0, 1)
+)
+
+ls_fit = lm(y ~ x, data = sim_data) 
+
+tibble(
+  beta0_hat = coef(ls_fit)[1],
+  beta1_hat = coef(ls_fit)[2]
+)
+}
+
+sim_regression(n = 30)
+
+```
+
+```{r}
+sim_regression1 = function(n,beta0,beta1){
+  
+  sim_data = tibble(
+  x = rnorm(n, mean = 1, sd = 1),
+  y = beta0 + beta1 * x + rnorm(n, 0, 1)
+)
+
+ls_fit = lm(y ~ x, data = sim_data) 
+
+tibble(
+  beta0_hat = coef(ls_fit)[1],
+  beta1_hat = coef(ls_fit)[2]
+)
+}
+
+sim_regression1(n = 3000,beta0 = 3,beta1 = 2)
+```
+
