@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tidyverse)
+library(xml2)
 ```
 
 we are going to write some functions
@@ -21,18 +22,19 @@ we are going to write some functions
 
 
 ```{r}
-z_scores = function(x_arg) {
-  
-  if (!is.numeric(x_arg)){stop("Argument x should be numeric")
-  }else if (length(x_arg) == 1) {
-    stop("Z scores cannot be computed for length 1 vectors")
-  }
-  z = (x_arg- mean(x_arg)) / sd(x_arg)
-  z
-}
+   z_scores = function(x_arg) {
+     
+     if (!is.numeric(x_arg)){stop("Argument x should be numeric")
+     }else if (length(x_arg) == 1) {
+       stop("Z scores cannot be computed for length 1 vectors")
+     }
+     z = (x_arg- mean(x_arg)) / sd(x_arg)
+     z
+   }
 
 
 ```
+
 ```{r}
 z_scores(x_arg = x_again)
 
@@ -113,5 +115,33 @@ tibble(
 }
 
 sim_regression1(n = 3000,beta0 = 3,beta1 = 2)
+```
+```{r}
+read_page_reviews <- function(url) {
+  
+  h = read_html(url)
+  
+  review_titles = h %>%
+    html_nodes("#cm_cr-review_list .review-title") %>%
+    html_text()
+  
+  review_stars = h %>%
+    html_nodes("#cm_cr-review_list .review-rating") %>%
+    html_text() %>%
+    str_extract("\\d") %>%
+    as.numeric()
+  
+  review_text = h %>%
+    html_nodes(".review-data:nth-child(4)") %>%
+    html_text()
+  
+  tibble(
+    title = review_titles,
+    stars = review_stars,
+    text = review_text
+  )
+}
+
+#read_page_reviews(url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=")
 ```
 

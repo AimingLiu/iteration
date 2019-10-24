@@ -374,29 +374,28 @@ summary {
 <pre class="r"><code> x = rnorm(n = 30,mean = 4,sd = 2.3)
  x_again = rnorm(n = 30,mean = 6,sd = .3)
  y = rnorm(n = 30,mean = 5,sd = 2)</code></pre>
-<pre class="r"><code>z_scores = function(x_arg) {
-  
-  if (!is.numeric(x_arg)){stop(&quot;Argument x should be numeric&quot;)
-  }else if (length(x_arg) == 1) {
-    stop(&quot;Z scores cannot be computed for length 1 vectors&quot;)
-  }
-  z = (x_arg- mean(x_arg)) / sd(x_arg)
-  z
-}</code></pre>
+<pre class="r"><code>   z_scores = function(x_arg) {
+     
+     if (!is.numeric(x_arg)){stop(&quot;Argument x should be numeric&quot;)
+     }else if (length(x_arg) == 1) {
+       stop(&quot;Z scores cannot be computed for length 1 vectors&quot;)
+     }
+     z = (x_arg- mean(x_arg)) / sd(x_arg)
+     z
+   }</code></pre>
 <pre class="r"><code>z_scores(x_arg = x_again)</code></pre>
-<pre><code>##  [1]  1.582967675  0.023546083  0.104926517  0.133211146 -0.905851078
-##  [6]  0.013345482  1.235144414 -1.078523950  0.008529089  0.617722619
-## [11] -0.747123996  1.005757724 -0.227812634 -0.302283362 -1.094805694
-## [16] -0.514978983  0.090487498 -1.485213457 -0.081569169  1.026123381
-## [21] -1.217393025  0.695294446  1.740636629 -2.241267124 -1.149693549
-## [26]  1.748453200  0.206113771 -0.593050587  0.290522440  1.116784494</code></pre>
+<pre><code>##  [1] -0.815559535  0.359491341 -0.182404061 -0.344186475  0.522946988
+##  [6]  0.378816928  0.105116698  1.429813594  0.581915565 -0.459013342
+## [11]  0.683568366  0.536139907  0.740417769 -0.106031670 -0.453205497
+## [16]  0.066417601  1.592846413 -1.595773760  2.185939743 -0.520447662
+## [21]  1.129001770 -1.902913808 -0.861482943 -1.777467699  0.824738440
+## [26] -0.241297201  0.325622516  0.006917334 -1.908610088 -0.301317230</code></pre>
 <pre class="r"><code>z_scores(x_arg = y)</code></pre>
-<pre><code>##  [1]  0.52598637  0.06823796 -0.66039092  0.45437430  1.46639917
-##  [6] -1.10511424  0.60441192 -0.65566594 -0.38437771  0.38761915
-## [11]  0.06160687 -2.08424633  1.29065265 -1.30914756 -1.33428900
-## [16]  0.28751441 -1.38006386  1.08502699 -0.01708244  1.03727011
-## [21] -0.33932562 -0.53584402 -0.46586691 -0.78357748  0.42912380
-## [26]  1.71144006  1.61899476  0.13191504 -1.25114525  1.14556372</code></pre>
+<pre><code>##  [1]  1.1087051 -0.7208382  0.9198624 -0.8464748  0.2881646  2.2390977
+##  [7] -0.9318393  0.5505238  1.6349205  0.4142649 -1.9409229  1.1630960
+## [13]  0.3941960 -0.4416117  0.1139148  0.6316458 -0.4168729 -1.4962223
+## [19] -0.1395130 -1.3278582  0.4782114 -1.0070674 -0.8031900  0.5608392
+## [25]  0.3932041  0.7534608 -1.4342737 -0.5050754  0.9564136 -0.5887608</code></pre>
 <div id="multiple-outputs" class="section level1">
 <h1>Multiple outputs</h1>
 <pre class="r"><code>mean_and_sd = function(input_x){
@@ -418,7 +417,7 @@ summary {
 <pre><code>## # A tibble: 1 x 2
 ##    mean    sd
 ##   &lt;dbl&gt; &lt;dbl&gt;
-## 1  5.06  1.89</code></pre>
+## 1  5.02  2.11</code></pre>
 </div>
 <div id="multiple-inputs" class="section level1">
 <h1>Multiple inputs</h1>
@@ -450,7 +449,7 @@ sim_regression(n = 30)</code></pre>
 <pre><code>## # A tibble: 1 x 2
 ##   beta0_hat beta1_hat
 ##       &lt;dbl&gt;     &lt;dbl&gt;
-## 1      2.24      3.11</code></pre>
+## 1      2.37      3.06</code></pre>
 <pre class="r"><code>sim_regression1 = function(n,beta0,beta1){
   
   sim_data = tibble(
@@ -470,7 +469,33 @@ sim_regression1(n = 3000,beta0 = 3,beta1 = 2)</code></pre>
 <pre><code>## # A tibble: 1 x 2
 ##   beta0_hat beta1_hat
 ##       &lt;dbl&gt;     &lt;dbl&gt;
-## 1      2.98      2.00</code></pre>
+## 1      2.97      2.03</code></pre>
+<pre class="r"><code>read_page_reviews &lt;- function(url) {
+  
+  h = read_html(url)
+  
+  review_titles = h %&gt;%
+    html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+    html_text()
+  
+  review_stars = h %&gt;%
+    html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+    html_text() %&gt;%
+    str_extract(&quot;\\d&quot;) %&gt;%
+    as.numeric()
+  
+  review_text = h %&gt;%
+    html_nodes(&quot;.review-data:nth-child(4)&quot;) %&gt;%
+    html_text()
+  
+  tibble(
+    title = review_titles,
+    stars = review_stars,
+    text = review_text
+  )
+}
+
+#read_page_reviews(url = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;)</code></pre>
 </div>
 
 
